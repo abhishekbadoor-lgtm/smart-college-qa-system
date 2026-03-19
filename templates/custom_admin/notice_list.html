@@ -1,0 +1,67 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Notice Board{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-bullhorn me-2"></i>Notice Board</h1>
+    <a href="{% url 'admin_add_notice' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Post Notice
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date Posted</th>
+                        <th>Visibility</th>
+                        <th>Posted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notice in notices %}
+                    <tr>
+                        <td>
+                            <div><strong>{{ notice.title }}</strong></div>
+                            <small class="text-muted">{{ notice.content|truncatechars:50 }}</small>
+                        </td>
+                        <td>{{ notice.date_posted|date:"M d, Y" }}</td>
+                        <td>
+                            {% if notice.is_public %}
+                            <span class="badge bg-success">Public</span>
+                            {% else %}
+                            <span class="badge bg-warning">Restricted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if notice.faculty_posted %}
+                            <a href="{% url 'admin_faculty_detail' notice.faculty_posted.pk %}"
+                                class="text-decoration-none">
+                                {{ notice.faculty_posted.user.get_full_name|default:notice.faculty_posted.user.username
+                                }}
+                            </a>
+                            {% else %}
+                            Admin
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'admin_delete_notice' notice.pk %}" class="btn btn-sm btn-danger"
+                                onclick="return confirmAction(event, 'Delete Notice?', 'Are you sure you want to delete this notice?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No notices found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

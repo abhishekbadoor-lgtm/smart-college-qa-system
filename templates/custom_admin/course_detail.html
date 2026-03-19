@@ -1,0 +1,77 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Course Detail: {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-book-open me-2"></i>{{ course.name }} ({{ course.code }})</h1>
+    <div>
+        <a href="{% url 'admin_edit_course' course.pk %}" class="btn btn-secondary me-2">
+            <i class="fas fa-edit me-1"></i>Edit
+        </a>
+        <a href="{% url 'admin_course_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-1"></i>Back
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Course Details</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Description:</strong> {{ course.description|default:"No description provided." }}</p>
+                <div class="d-flex gap-4 mt-3">
+                    <div><strong>Total Semesters:</strong> <span class="badge bg-info text-dark">{{ course.semesters.count }}</span></div>
+                    <div><strong>Total Subjects:</strong> <span class="badge bg-secondary">{{ course.total_subjects }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-3 px-1"><i class="fas fa-layer-group me-2 text-muted"></i>Structure Breakdown</h3>
+
+<div class="row">
+    {% for semester in semesters %}
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary fw-bold">Semester {{ semester.semester_number }}</h5>
+                <span class="badge bg-secondary rounded-pill">{{ semester.subjects.count }} Subjects</span>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for subject in semester.subjects.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <span class="fw-bold d-block">{{ subject.name }}</span>
+                            <small class="text-muted"><i class="fas fa-hashtag me-1"></i>{{ subject.code }}</small>
+                        </div>
+                        <div class="text-end">
+                            {% if subject.faculty %}
+                            <span class="badge bg-success"><i class="fas fa-user-tie me-1"></i>{{ subject.faculty.user.get_full_name|default:subject.faculty.user.username }}</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-circle me-1"></i>Unassigned</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center text-muted py-4">No subjects added for this semester.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted my-5">
+        <i class="fas fa-folder-open fa-3x mb-3 text-light"></i>
+        <h4>No Semesters Found</h4>
+        <p>This course does not have any semesters configured yet.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

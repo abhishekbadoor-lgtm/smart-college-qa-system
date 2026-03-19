@@ -1,0 +1,40 @@
+{% extends 'faculty_dashboard/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Reply to Feedback</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted">Feedback from {{
+                        feedback.student.user.get_full_name|default:feedback.student.user.username }}</label>
+                    <div class="p-3 bg-light rounded text-dark">
+                        {{ feedback.message|linebreaks }}
+                    </div>
+                    <small class="text-muted">Submitted on {{ feedback.date_submitted|date:"M d, Y H:i" }}</small>
+                </div>
+
+                <hr>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="reply" class="form-label fw-bold">Your Response</label>
+                        <textarea name="reply" id="reply" rows="6" class="form-control"
+                            placeholder="Write your response here..."
+                            required>{{ feedback.reply|default:'' }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="{% url 'faculty_feedback_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-5">Send Response</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

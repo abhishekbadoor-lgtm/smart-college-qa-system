@@ -1,0 +1,68 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}{% if rule %}Edit Keyword{% else %}add new keyword{% endif %} | Chatbot Knowledge Base{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{% if rule %}Edit Keyword{% else %}add new keyword{% endif %}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{% url 'admin_chatbot_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0">{% if rule %}Update Keyword Entry{% else %}add new keyword Entry{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="keyword" class="form-label">Keyword / Trigger Question</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" value="{{ rule.keyword }}"
+                            required placeholder="e.g., 'exam schedule', 'hostel fees'">
+                        <div class="form-text">Users matching this keyword (or close to it) will trigger the answer.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department Context</label>
+                        <select class="form-select" id="department" name="department">
+                            {% for code, name in department_choices %}
+                            {% if rule.department == code %}
+                            <option value="{{ code }}" selected>{{ name }}</option>
+                            {% else %}
+                            <option value="{{ code }}">{{ name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Associate this rule with a specific department if applicable.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="answer" class="form-label">Automated Answer</label>
+                        <textarea class="form-control" id="answer" name="answer" rows="5" required
+                            placeholder="Enter the detailed answer here...">{{ rule.answer }}</textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            {% if rule %}
+                            Update Keyword
+                            {% else %}
+                            add new keyword
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

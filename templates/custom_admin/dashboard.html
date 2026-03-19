@@ -1,0 +1,127 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard Overview</h1>
+    <p class="text-muted">Welcome back, {{ request.user.username }}!</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total Faculty</h6>
+                        <h2 class="mb-0">{{ total_faculty }}</h2>
+                        <small class="text-success">Active</small>
+                    </div>
+                    <div class="text-primary" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Total Students</h6>
+                        <h2 class="mb-0">{{ total_students }}</h2>
+                        <small class="text-success">Active</small>
+                    </div>
+                    <div class="text-success" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Active Courses</h6>
+                        <h2 class="mb-0">{{ total_courses }}</h2>
+                    </div>
+                    <div class="text-warning" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Pending Verifications</h6>
+                        <h2 class="mb-0">{{ total_pending }}</h2>
+                        <small class="{% if total_pending > 0 %}text-danger{% else %}text-success{% endif %}">
+                            {% if total_pending > 0 %}Requires attention{% else %}All clear{% endif %}
+                        </small>
+                    </div>
+                    <div class="text-danger" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'admin_faculty_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-check me-2 text-primary"></i>Verify Faculty ({{ pending_faculty }}
+                        pending)
+                    </a>
+                    <a href="{% url 'admin_student_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-check me-2 text-success"></i>Verify Students ({{ pending_students }}
+                        pending)
+                    </a>
+                    <a href="{% url 'admin_add_course' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus me-2 text-info"></i>Add New Course
+                    </a>
+                    <a href="{% url 'admin_add_notice' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bullhorn me-2 text-danger"></i>Post New Notice
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>System Information</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Total Faculty:</strong> {{ total_faculty }}</p>
+                <p class="mb-2"><strong>Total Students:</strong> {{ total_students }}</p>
+                <p class="mb-2"><strong>Total Courses:</strong> {{ total_courses }}</p>
+                <hr>
+                <p class="mb-2"><strong>Pending Faculty Verifications:</strong> {{ pending_faculty }}</p>
+                <p class="mb-0"><strong>Pending Student Verifications:</strong> {{ pending_students }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

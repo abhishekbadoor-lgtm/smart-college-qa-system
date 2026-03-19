@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Faculty Dashboard{% endblock %} | Smart College</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .sidebar .nav-link {
+            color: #495057;
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .sidebar .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6c757d;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Premium Tweaks */
+        .card {
+            border: 0;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'faculty_dashboard' %}">
+                <i class="fas fa-chalkboard-teacher me-2"></i>Faculty Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> {{ request.user.first_name }} {{ request.user.last_name}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'home' %}"><i
+                                        class="fas fa-home me-2"></i>Home</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal"
+                                    data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'faculty_dashboard' %}active{% endif %}"
+                                href="{% url 'faculty_dashboard' %}">
+                                <i class="fas fa-th-large me-2"></i>Dashboard
+                            </a>
+                        </li>
+
+                        <li class="section-title">Class Management</li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'faculty_student_list' %}active{% endif %}"
+                                href="{% url 'faculty_student_list' %}">
+                                <i class="fas fa-users me-2"></i>Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'faculty_add_attendance' %}active{% endif %}"
+                                href="{% url 'faculty_add_attendance' %}">
+                                <i class="fas fa-calendar-alt me-2"></i>Attendance
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'faculty_add_marks' %}active{% endif %}"
+                                href="{% url 'faculty_add_marks' %}">
+                                <i class="fas fa-marker me-2"></i>Internal Marks
+                            </a>
+                        </li>
+
+                        <li class="section-title">Communication</li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'faculty_add_notice' %}active{% endif %}"
+                                href="{% url 'faculty_add_notice' %}">
+                                <i class="fas fa-bullhorn me-2"></i>Add Notice
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'faculty_feedback' in request.resolver_match.url_name %}active{% endif %}"
+                                href="{% url 'faculty_feedback_list' %}">
+                                <i class="fas fa-comments me-2"></i>Student Feedback
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="py-4">
+                    <!-- Faculty Info -->
+                    <div
+                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                        <h1 class="h2">{% block header %}Dashboard{% endblock %}</h1>
+                        <div class="text-muted">
+                            <small>{{ faculty.department }} Department | ID: {{ faculty.employee_id }}</small>
+                        </div>
+                    </div>
+
+                    <!-- Messages -->
+                    <script>
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+                        /* {% if messages %} */
+                        /* {% for message in messages %} */
+                        Toast.fire({
+                            icon: '{{ message.tags }}' === 'error' ? 'error' : '{{ message.tags }}' === 'warning' ? 'warning' : '{{ message.tags }}' === 'info' ? 'info' : 'success',
+                            title: '{{ message }}'
+                        });
+                        /* {% endfor %} */
+                        /* {% endif %} */
+
+                        function confirmAction(event, title = 'Are you sure?', text = "You won't be able to revert this!", icon = 'warning') {
+                            event.preventDefault();
+                            const url = event.currentTarget.getAttribute('href');
+
+                            Swal.fire({
+                                title: title,
+                                text: text,
+                                icon: icon,
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, delete it!',
+                                cancelButtonText: 'Cancel',
+                                customClass: {
+                                    popup: 'rounded-4',
+                                    confirmButton: 'rounded-3 px-4',
+                                    cancelButton: 'rounded-3 px-4'
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = url;
+                                }
+                            });
+                            return false;
+                        }
+                    </script>
+
+                    <!-- Content -->
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'includes/logout_modal.html' %}
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

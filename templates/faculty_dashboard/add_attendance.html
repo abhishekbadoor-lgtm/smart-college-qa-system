@@ -1,0 +1,116 @@
+{% extends 'faculty_dashboard/base.html' %}
+
+{% block title %}Add Attendance{% endblock %}
+
+{% block header %}Take Attendance{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Select Course</label>
+                    <select name="course" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Course --</option>
+                        {% for c in courses %}
+                        <option value="{{ c.id }}" {% if c.id == selected_course_id %}selected{% endif %}>
+                            {{ c.code }} - {{ c.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if selected_course_id %}
+                <div class="col-md-4">
+                    <label class="form-label">Select Semester</label>
+                    <select name="semester" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Semester --</option>
+                        {% for sem in semesters %}
+                        <option value="{{ sem.id }}" {% if sem.id == selected_semester_id %}selected{% endif %}>
+                            Semester {{ sem.semester_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if selected_semester_id %}
+                <div class="col-md-4">
+                    <label class="form-label">Select Subject</label>
+                    <select name="subject" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Subject --</option>
+                        {% for s in subjects %}
+                        <option value="{{ s.id }}" {% if s.id == selected_subject_id %}selected{% endif %}>
+                            {{ s.code }} - {{ s.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if selected_subject_id %}
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Mark Attendance</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="course" value="{{ selected_course_id }}">
+            <input type="hidden" name="semester" value="{{ selected_semester_id }}">
+            <input type="hidden" name="subject" value="{{ selected_subject_id }}">
+
+            <div class="mb-3 col-md-4">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" class="form-control" required value="{% now 'Y-m-d' %}"
+                    max="{% now 'Y-m-d' %}">
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="status_{{ student.user.id }}"
+                                        id="p_{{ student.user.id }}" value="P" checked>
+                                    <label class="btn btn-outline-success" for="p_{{ student.user.id }}">Present</label>
+
+                                    <input type="radio" class="btn-check" name="status_{{ student.user.id }}"
+                                        id="a_{{ student.user.id }}" value="A">
+                                    <label class="btn btn-outline-danger" for="a_{{ student.user.id }}">Absent</label>
+
+
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">No students enrolled in this course.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if students %}
+            <button type="submit" class="btn btn-primary mt-3">Save Attendance</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}{% if qa %}Edit Q&A{% else %}Add Q&A{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4>
+        <i class="fas fa-question-circle me-2"></i>
+        {% if qa %}Edit Q&A Entry{% else %}Add New Q&A Entry{% endif %}
+    </h4>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="question" class="form-label fw-semibold">
+                            <i class="fas fa-question-circle text-primary me-2"></i>Question
+                        </label>
+                        <input type="text" class="form-control" id="question" name="question"
+                            value="{% if qa %}{{ qa.question }}{% endif %}" required placeholder="Enter the question">
+                        <div class="form-text">Enter a clear, concise question that users might ask.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="answer" class="form-label fw-semibold">
+                            <i class="fas fa-check-circle text-success me-2"></i>Answer
+                        </label>
+                        <textarea class="form-control" id="answer" name="answer" rows="5" required
+                            placeholder="Enter the answer">{% if qa %}{{ qa.answer }}{% endif %}</textarea>
+                        <div class="form-text">Provide a comprehensive answer to the question.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="keywords" class="form-label fw-semibold">
+                            <i class="fas fa-tags text-muted me-2"></i>Keywords
+                        </label>
+                        <input type="text" class="form-control" id="keywords" name="keywords"
+                            value="{% if qa %}{{ qa.keywords }}{% endif %}" placeholder="admission, fees, hostel">
+                        <div class="form-text">Comma-separated keywords to help users find this Q&A (e.g., admission,
+                            fees, hostel).</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save
+                        </button>
+                        <a href="{% url 'admin_qa_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 bg-light">
+            <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-lightbulb text-warning me-2"></i>Tips</h6>
+                <ul class="small mb-0">
+                    <li>Keep questions clear and specific</li>
+                    <li>Provide complete, helpful answers</li>
+                    <li>Use keywords that users might search for</li>
+                    <li>Review existing Q&As to avoid duplicates</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

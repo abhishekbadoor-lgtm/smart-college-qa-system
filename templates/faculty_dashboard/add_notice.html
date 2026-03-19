@@ -1,0 +1,70 @@
+{% extends 'faculty_dashboard/base.html' %}
+
+{% block title %}Add Notice{% endblock %}
+
+{% block header %}Post New Notice{% endblock %}
+
+{% block content %}
+<div class="card col-md-8 mx-auto">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" class="form-control" required placeholder="Notice Title">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Target Audience</label>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="is_public" id="is_public">
+                    <label class="form-check-label" for="is_public">
+                        Public (Visible to everyone)
+                    </label>
+                </div>
+
+                <label class="form-label mt-2">Or Select Specific Subject</label>
+                <select name="subject" class="form-select" id="subject_select">
+                    <option value="">-- None (General) --</option>
+                    {% for s in subjects %}
+                    <option value="{{ s.id }}">
+                        {{ s.code }} - {{ s.name }} ({{ s.semester.course.code }} Sem {{ s.semester.semester_number }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea name="content" class="form-control" rows="5" required
+                    placeholder="Write your notice here..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Expiry Date & Time (Optional)</label>
+                <input type="datetime-local" name="expires_at" class="form-control"
+                    help_text="Leave blank for permanent notice. Notice will be hidden after this time.">
+                <div class="form-text">Notice will automatically disappear from all dashboards after this time.</div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Post Notice</button>
+                <a href="{% url 'faculty_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('is_public').addEventListener('change', function () {
+        const subjectSelect = document.getElementById('subject_select');
+        if (this.checked) {
+            subjectSelect.value = "";
+            subjectSelect.disabled = true;
+        } else {
+            subjectSelect.disabled = false;
+        }
+    });
+</script>
+{% endblock %}

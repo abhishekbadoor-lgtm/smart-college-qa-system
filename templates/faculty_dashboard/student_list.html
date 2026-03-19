@@ -1,0 +1,90 @@
+{% extends 'faculty_dashboard/base.html' %}
+
+{% block title %}My Students{% endblock %}
+
+{% block header %}Student List{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-white">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="course" class="form-label">Select Course</label>
+                <select name="course" id="course" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Choose Course --</option>
+                    {% for c in courses %}
+                    <option value="{{ c.id }}" {% if c.id == selected_course_id %}selected{% endif %}>
+                        {{ c.code }} - {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if selected_course_id %}
+            <div class="col-md-3">
+                <label for="semester" class="form-label">Select Semester</label>
+                <select name="semester" id="semester" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Choose Semester --</option>
+                    {% for sem in semesters %}
+                    <option value="{{ sem.id }}" {% if sem.id == selected_semester_id %}selected{% endif %}>
+                        Semester {{ sem.semester_number }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            {% if selected_semester_id %}
+            <div class="col-md-4">
+                <label for="subject" class="form-label">Select Subject</label>
+                <select name="subject" id="subject" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- All Subjects --</option>
+                    {% for sub in subjects %}
+                    <option value="{{ sub.id }}" {% if sub.id == selected_subject_id %}selected{% endif %}>
+                        {{ sub.code }} - {{ sub.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-2 d-flex align-items-end">
+                <a href="{% url 'faculty_student_list' %}" class="btn btn-outline-secondary w-100">Reset</a>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                        <td>{{ student.user.email }}</td>
+                        <td>{{ student.course.code }} ({{ student.course.name }})</td>
+                        <td>
+                            {% if student.is_verified %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No students found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

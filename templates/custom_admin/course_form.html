@@ -1,0 +1,291 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}{% if course %}Edit{% else %}Add{% endif %} Course{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">{% if course %}Edit{% else %}Add{% endif %} Course</h1>
+    <a href="{% url 'admin_course_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <form method="post" id="courseForm">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="code" class="form-label fw-bold">Course Code</label>
+                            {% if course %}
+                            <input type="text" id="code" name="code" class="form-control bg-light"
+                                value="{{ course.code }}" readonly title="Course code cannot be changed">
+                            {% else %}
+                            <input type="text" id="code_display" class="form-control bg-light" value="Auto-generated"
+                                readonly title="Code will be assigned automatically (starting from 103)">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="name" class="form-label fw-bold">Course Name</label>
+                            <input type="text" id="name" name="name" class="form-control" value="{{ course.name }}"
+                                placeholder="e.g. Master of Computer Applications" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Description</label>
+                        <textarea id="description" name="description" class="form-control"
+                            rows="2">{{ course.description }}</textarea>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Course Structure</h4>
+                        <div class="d-flex align-items-center" style="width: 250px;">
+                            <label for="total_semesters" class="form-label mb-0 me-2 text-nowrap">Total
+                                Semesters:</label>
+                            <input type="number" id="total_semesters" name="total_semesters"
+                                class="form-control form-control-sm"
+                                value="{% if semesters %}{{ semesters.count }}{% else %}0{% endif %}" min="0" max="12"
+                                onchange="updateSemesters()">
+                        </div>
+                    </div>
+
+                    <div id="semestersContainer">
+                        <!-- Semesters will be injected here via JS -->
+                        {% if semesters %}
+                        {% for sem in semesters %}
+                        <div class="semester-section card mb-4 border-light bg-light"
+                            data-sem="{{ sem.semester_number }}">
+                            <div
+                                class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Semester {{ sem.semester_number }}</h5>
+                                <input type="hidden" name="semester_{{ sem.semester_number }}_subject_count"
+                                    id="sem_{{ sem.semester_number }}_count" value="{{ sem.subjects.count }}">
+                                <button type="button" class="btn btn-sm btn-light"
+                                    data-semester="{{ sem.semester_number }}"
+                                    onclick="addSubject(this.dataset.semester)">
+                                    <i class="fas fa-plus me-1"></i>Add Subject
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered bg-white align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 20%;">Code</th>
+                                                <th style="width: 30%;">Subject Name</th>
+                                                <th style="width: 25%;">Faculty Assigned</th>
+                                                <th style="width: 20%;">Description</th>
+                                                <th style="width: 5%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="subjects_container_{{ sem.semester_number }}">
+                                            {% for sub in sem.subjects.all %}
+                                            <tr id="row_{{ sem.semester_number }}_{{ forloop.counter }}">
+                                                <td><input type="text"
+                                                        name="subject_{{ sem.semester_number }}_{{ forloop.counter }}_code"
+                                                        class="form-control form-control-sm" value="{{ sub.code }}"
+                                                        required></td>
+                                                <td><input type="text"
+                                                        name="subject_{{ sem.semester_number }}_{{ forloop.counter }}_name"
+                                                        class="form-control form-control-sm" value="{{ sub.name }}"
+                                                        required></td>
+                                                <td>
+                                                    <select
+                                                        name="subject_{{ sem.semester_number }}_{{ forloop.counter }}_faculty"
+                                                        class="form-select form-select-sm">
+                                                        <option value="">-- No Faculty --</option>
+                                                        {% for faculty in faculties %}
+                                                        <option value="{{ faculty.user_id }}" {% if sub.faculty_id == faculty.user_id %}selected{% endif %}>
+                                                            {{ faculty.user.first_name }} {{ faculty.user.last_name }}
+                                                            ({{ faculty.employee_id }})
+                                                        </option>
+                                                        {% endfor %}
+
+                                                    </select>
+                                                </td>
+                                                <td><input type="text"
+                                                        name="subject_{{ sem.semester_number }}_{{ forloop.counter }}_description"
+                                                        class="form-control form-control-sm"
+                                                        value="{{ sub.description }}"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger border-0"
+                                                        data-sem="{{ sem.semester_number }}"
+                                                        data-idx="{{ forloop.counter }}"
+                                                        onclick="removeSubject(this.dataset.sem, this.dataset.idx)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow">
+                            <i class="fas fa-save me-2"></i>{% if course %}Update{% else %}Save{% endif %} Course
+                            Details
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const facultiesList = [
+        // prettier-ignore
+        {% for faculty in faculties %}
+    { id: "{{ faculty.user_id }}", name: "{{ faculty.user.first_name }} {{ faculty.user.last_name }} ({{ faculty.employee_id }})" },
+    {% endfor %}
+    ];
+
+    function updateSemesters() {
+        const container = document.getElementById('semestersContainer');
+        const count = parseInt(document.getElementById('total_semesters').value) || 0;
+        const currentCount = container.querySelectorAll('.semester-section').length;
+
+        if (count > currentCount) {
+            // Add new semesters
+            for (let i = currentCount + 1; i <= count; i++) {
+                const semDiv = document.createElement('div');
+                semDiv.className = 'semester-section card mb-4 border-light bg-light';
+                semDiv.setAttribute('data-sem', i);
+                semDiv.innerHTML = `
+                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Semester ${i}</h5>
+                        <input type="hidden" name="semester_${i}_subject_count" id="sem_${i}_count" value="0">
+                        <button type="button" class="btn btn-sm btn-light" onclick="addSubject(${i})">
+                            <i class="fas fa-plus me-1"></i>Add Subject
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered bg-white align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;">Code</th>
+                                        <th style="width: 30%;">Subject Name</th>
+                                        <th style="width: 25%;">Faculty Assigned</th>
+                                        <th style="width: 20%;">Description</th>
+                                        <th style="width: 5%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjects_container_${i}">
+                                    <tr><td colspan="5" class="text-center text-muted py-3">No subjects added yet. Click 'Add Subject' to start.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(semDiv);
+            }
+        } else if (count < currentCount) {
+            // Remove extra semesters from the end
+            for (let i = currentCount; i > count; i--) {
+                const semRow = container.querySelector(`.semester-section[data-sem="${i}"]`);
+                if (semRow) semRow.remove();
+            }
+        }
+    }
+
+    function addSubject(semId) {
+        const container = document.getElementById(`subjects_container_${semId}`);
+        const countInput = document.getElementById(`sem_${semId}_count`);
+
+        // Remove empty message if exists
+        if (container.querySelector('td[colspan="5"]')) {
+            container.innerHTML = '';
+        }
+
+        const currentSubCount = parseInt(countInput.value) + 1;
+        countInput.value = currentSubCount;
+
+        const facultyOptions = facultiesList.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+
+        const tr = document.createElement('tr');
+        tr.id = `row_${semId}_${currentSubCount}`;
+        tr.innerHTML = `
+            <td><input type="text" name="subject_${semId}_${currentSubCount}_code" class="form-control form-control-sm" required></td>
+            <td><input type="text" name="subject_${semId}_${currentSubCount}_name" class="form-control form-control-sm" required></td>
+            <td>
+                <select name="subject_${semId}_${currentSubCount}_faculty" class="form-select form-select-sm">
+                    <option value="">-- No Faculty --</option>
+                    ${facultyOptions}
+                </select>
+            </td>
+            <td><input type="text" name="subject_${semId}_${currentSubCount}_description" class="form-control form-control-sm"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="removeSubject(${semId}, ${currentSubCount})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </td>
+        `;
+        container.appendChild(tr);
+    }
+
+    function removeSubject(semId, subIdx) {
+        const row = document.getElementById(`row_${semId}_${subIdx}`);
+        if (row) row.remove();
+
+        // We don't necessarily need to re-index unless we want perfectly sequential IDs.
+        // The backend loop uses 'range' so it might miss items if we just delete.
+        // Actually, let's just keep them and the backend can check for existence in POST.
+        // Or better: Re-index to keep them sequential.
+        reIndexSubjects(semId);
+    }
+
+    function reIndexSubjects(semId) {
+        const container = document.getElementById(`subjects_container_${semId}`);
+        const rows = container.querySelectorAll('tr');
+        const countInput = document.getElementById(`sem_${semId}_count`);
+
+        if (rows.length === 0) {
+            container.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No subjects added yet. Click \'Add Subject\' to start.</td></tr>';
+            countInput.value = 0;
+            return;
+        }
+
+        rows.forEach((row, index) => {
+            const newIdx = index + 1;
+            row.id = `row_${semId}_${newIdx}`;
+
+            // Update inputs
+            row.querySelectorAll('input, select').forEach(input => {
+                const name = input.name;
+                const parts = name.split('_');
+                // subject_{sem}_{oldIdx}_{field}
+                if (parts.length >= 4) {
+                    input.name = `subject_${semId}_${newIdx}_${parts[3]}`;
+                }
+            });
+
+            // Update button
+            row.querySelector('button').setAttribute('onclick', `removeSubject(${semId}, ${newIdx})`);
+        });
+
+        countInput.value = rows.length;
+    }
+
+    // Initialize if editing
+    window.onload = function () {
+        if (!document.getElementById('semestersContainer').querySelector('.semester-section')) {
+            // If empty (adding new), maybe add 1 semester by default?
+            // document.getElementById('total_semesters').value = 1;
+            // updateSemesters();
+        }
+    };
+</script>
+{% endblock %}

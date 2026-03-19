@@ -1,0 +1,67 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Feedback{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-comment-dots me-2"></i>Feedback</h1>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>From</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in feedbacks %}
+                    <tr>
+                        <td style="white-space: nowrap;">{{ feedback.date_submitted|date:"M d, Y" }}</td>
+                        <td>
+                            <div>
+                                <strong>
+                                    {% if feedback.student %}
+                                    <a href="{% url 'admin_student_detail' feedback.student.pk %}"
+                                        class="text-decoration-none">
+                                        {{ feedback.name }}
+                                    </a>
+                                    {% else %}
+                                    {{ feedback.name }}
+                                    {% endif %}
+                                </strong>
+                            </div>
+                            <small class="text-muted">{{ feedback.email }}</small>
+                        </td>
+                        <td>{{ feedback.message|truncatechars:50 }}</td>
+                        <td>
+                            {% if feedback.replied_at %}
+                            <span class="badge bg-success">Replied</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'admin_feedback_detail' feedback.pk %}"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-reply me-1"></i> View/Reply
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">No feedback received.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

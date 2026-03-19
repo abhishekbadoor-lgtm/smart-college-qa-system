@@ -1,0 +1,152 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Smart College Admin{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --bs-primary: #0d6efd;
+      --bs-dark: #212529;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    #header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+      color: white;
+      padding: 20px 0;
+      border-bottom: none;
+    }
+
+    #header h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+
+    #header a {
+      color: white !important;
+    }
+
+    #user-tools {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 10px;
+    }
+
+    #user-tools a {
+      color: white !important;
+      text-decoration: none;
+      margin-right: 15px;
+    }
+
+    #user-tools a:hover {
+      text-decoration: underline;
+    }
+
+    #content {
+      background-color: white;
+      border-radius: 8px;
+      margin: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .module {
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .module h2 {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #0d6efd;
+      padding: 15px;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #0d6efd;
+    }
+
+    .module table {
+      width: 100%;
+    }
+
+    .module td, .module th {
+      padding: 12px 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .module tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .module a {
+      color: #0d6efd;
+      text-decoration: none;
+    }
+
+    .module a:hover {
+      text-decoration: underline;
+    }
+
+    .submit-row {
+      background-color: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 15px;
+      text-align: right;
+    }
+
+    .submit-row input {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .submit-row input:hover {
+      background-color: #0b5ed7;
+    }
+
+    #footer {
+      background-color: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      padding: 20px;
+      text-align: center;
+      color: #6c757d;
+      font-size: 14px;
+      margin-top: 40px;
+    }
+
+    .breadcrumbs {
+      background-color: white;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 12px 15px;
+      margin: 20px;
+    }
+
+    .breadcrumbs a {
+      color: #0d6efd !important;
+    }
+  </style>
+{% endblock %}
+
+{% block branding %}
+  <div style="padding: 20px; color: white;">
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700;">
+      🎓 Smart College Admin
+    </h1>
+    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">College Information & QA System</p>
+  </div>
+{% endblock %}

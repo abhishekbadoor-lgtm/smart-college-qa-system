@@ -1,0 +1,124 @@
+{% extends 'faculty_dashboard/base.html' %}
+{% load cms_extras %}
+
+{% block title %}Add Internal Marks{% endblock %}
+
+{% block header %}Internal Marks Entry{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Select Course</label>
+                    <select name="course" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Course --</option>
+                        {% for c in courses %}
+                       <option value="{{ c.id }}" {% if c.id == selected_course_id %}selected{% endif %}>
+                            {{ c.code }} - {{ c.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if selected_course_id %}
+                <div class="col-md-3">
+                    <label class="form-label">Select Semester</label>
+                    <select name="semester" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Semester --</option>
+                        {% for sem in semesters %}
+                        <option value="{{ sem.id }}" {% if sem.id == selected_semester_id %}selected{% endif %}>
+                            Semester {{ sem.semester_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if selected_semester_id %}
+                <div class="col-md-3">
+                    <label class="form-label">Select Subject</label>
+                    <select name="subject" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Subject --</option>
+                        {% for s in subjects %}
+                        <option value="{{ s.id }}" {% if s.id == selected_subject_id %}selected{% endif %}>
+                            {{ s.code }} - {{ s.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if selected_subject_id %}
+                <div class="col-md-3">
+                    <label class="form-label">Mark Type</label>
+                    <select name="mark_type" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Type --</option>
+                        {% for code, name in mark_choices %}
+                        <option value="{{ code }}" {% if code == selected_mark_type %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if selected_subject_id and selected_mark_type %}
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Enter Marks for {{ current_subject.name }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="course" value="{{ selected_course_id }}">
+            <input type="hidden" name="semester" value="{{ selected_semester_id }}">
+            <input type="hidden" name="subject" value="{{ selected_subject_id }}">
+            <input type="hidden" name="mark_type" value="{{ selected_mark_type }}">
+            <input type="hidden" name="action" value="save_marks">
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Marks (out of 100)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                            <td>
+                                <input type="number" name="score_{{ student.user.id }}" class="form-control" min="0"
+                                    max="100" step="0.5"
+                                    value="{{ existing_marks|get_item:student.user.id|default:'' }}">
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">No students found for this subject and semester.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if students %}
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Save Marks</button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% elif selected_subject_id %}
+<div class="alert alert-info">
+    Please select a Mark Type to continue.
+</div>
+{% endif %}
+{% endblock %}

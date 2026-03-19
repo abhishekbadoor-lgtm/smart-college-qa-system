@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Smart College — Home{% endblock %}
+
+{% block content %}
+
+<!-- Link Custom Landing Page CSS -->
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+
+<!-- Hero -->
+<header class="bg-primary text-white py-5">
+  <div class="container text-center">
+    <h1 class="display-5 fw-bold">Smart College Information & QA System</h1>
+    <p class="lead mb-4">Fast, reliable college notices, event updates, and instant answers — tailored for students,
+      faculty, and admins.</p>
+    <div class="d-flex justify-content-center gap-3">
+      <a class="btn btn-light btn-lg" href="{% url 'public_qa' %}"><i class="fas fa-question-circle me-2"></i>Browse
+        QA System</a>
+      <a class="btn btn-outline-light btn-lg" href="{% url 'register_choice' %}">Get Started</a>
+      <a class="btn btn-outline-light btn-lg" href="{% url 'login' %}">Login</a>
+    </div>
+  </div>
+</header>
+
+<!-- Key features -->
+<section class="py-5" id="features">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="feature-icon mb-3">
+              <i class="fas fa-bullhorn text-primary fa-2x"></i>
+            </div>
+            <h5 class="card-title fw-bold">Digital Notice Board</h5>
+            <p class="card-text text-muted">Publish college-wide or course-specific notices. Scheduled and searchable.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'public_qa' %}" class="text-decoration-none">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4">
+              <div class="feature-icon mb-3">
+                <i class="fas fa-question-circle text-primary fa-2x"></i>
+              </div>
+              <h5 class="card-title text-dark fw-bold">Keyword Q&A</h5>
+              <p class="card-text text-muted">Instant answers to common questions using keyword-matched Q&amp;A entries.
+              </p>
+              <span class="text-primary fw-semibold">Browse QA System <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body p-4">
+            <div class="feature-icon mb-3">
+              <i class="fas fa-shield-alt text-primary fa-2x"></i>
+            </div>
+            <h5 class="card-title fw-bold">Secure Modules</h5>
+            <p class="card-text text-muted">Separate Student, Faculty and Admin modules with full verification.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5 about-section" id="about">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <h2 class="display-6 fw-bold mb-3">Empowering Education with <span class="text-primary">Smart Technology</span>
+        </h2>
+        <p class="lead text-muted mb-4">Our platform is designed to streamline communication within educational
+          institutions. We bring students, faculty, and administration together in a seamless digital environment.</p>
+        <p class="text-muted">Smart College provides a centralized hub for all your academic needs. Whether you're
+          checking for the latest notices, seeking instant answers from our AI-powered QA system, or managing academic
+          records, we've got you covered. Our goal is to reduce administrative overhead and enhance the learning
+          experience through efficient information dissemination.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="p-3 bg-white rounded shadow-sm text-center">
+              <h3 class="text-primary fw-bold mb-1">24/7</h3>
+              <p class="small text-muted mb-0">Instant Answers</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-white rounded shadow-sm text-center">
+              <h3 class="text-primary fw-bold mb-1">Fast</h3>
+              <p class="small text-muted mb-0">Notice Updates</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-white rounded shadow-sm text-center">
+              <h3 class="text-primary fw-bold mb-1">Secure</h3>
+              <p class="small text-muted mb-0">Role Management</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 bg-white rounded shadow-sm text-center">
+              <h3 class="text-primary fw-bold mb-1">Direct</h3>
+              <p class="small text-muted mb-0">Communication</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="bg-light py-5" id="workflow">
+  <div class="container">
+    <h2 class="mb-5 text-center fw-bold">How It Works</h2>
+    <div class="row text-center g-4">
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 text-primary"><i class="fas fa-user-plus fa-2x"></i></div>
+          <h5 class="fw-bold">1. Registration</h5>
+          <p class="mb-0 text-muted">Faculty register and await admin verification. Students are registered directly by
+            administrators.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 text-primary"><i class="fas fa-tasks fa-2x"></i></div>
+          <h5 class="fw-bold">2. Publish & Manage</h5>
+          <p class="mb-0 text-muted">Admins and verified faculty can post notices, add marks, and maintain Q&amp;A
+            entries.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 text-primary"><i class="fas fa-search fa-2x"></i></div>
+          <h5 class="fw-bold">3. Discover</h5>
+          <p class="mb-0 text-muted">Students search notices or use the Q&amp;A module for immediate responses.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="pt-5 pb-4" id="contact">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h5 class="mb-3">Smart College</h5>
+        <p class="small">Elevating the college experience through streamlined digital communication and instant
+          information access for everyone.</p>
+        <div class="mt-4">
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4">
+        <h5 class="mb-3">Quick Links</h5>
+        <ul class="list-unstyled small">
+          <li class="mb-2"><a href="#about" class="text-decoration-none text-muted">About Us</a></li>
+          <li class="mb-2"><a href="{% url 'public_qa' %}" class="text-decoration-none text-muted">QA System</a></li>
+          <li class="mb-2"><a href="{% url 'register_choice' %}" class="text-decoration-none text-muted">Register</a>
+          </li>
+          <li class="mb-2"><a href="{% url 'login' %}" class="text-decoration-none text-muted">Login</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-4">
+        <h5 class="mb-3">Our Services</h5>
+        <ul class="list-unstyled small">
+          <li class="mb-2">Admin Dashboard</li>
+          <li class="mb-2">Faculty Portal</li>
+          <li class="mb-2">Student Dashboard</li>
+          <li class="mb-2">Digital Notice Board</li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-4 contact-info">
+        <h5 class="mb-3">Contact Us</h5>
+        <ul class="list-unstyled small">
+          <li class="mb-3">
+            <i class="fas fa-map-marker-alt"></i>
+            123 College Street, University Road, City - 123456
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-phone-alt"></i>
+            +91 98765 43210
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-envelope"></i>
+            info@smartcollege.edu
+          </li>
+        </ul>
+      </div>
+    </div>
+    <hr class="my-4 border-secondary">
+    <div class="text-center small">
+      <p class="mb-0">&copy; 2026 Smart College. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Chatbot Button -->
+<link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+<div class="chatbot-widget" id="chatbotWidget">
+  <a href="{% url 'public_qa' %}" id="chatbotLink">
+    <button class="chatbot-button">
+      <i class="fas fa-comments"></i>
+    </button>
+  </a>
+</div>
+
+<script>
+  // Make chatbot button draggable
+  (function () {
+    const widget = document.getElementById('chatbotWidget');
+    const link = document.getElementById('chatbotLink');
+    let isDragging = false;
+    let hasMoved = false;
+    let startX, startY;
+    let offsetX = 0, offsetY = 0;
+
+    widget.addEventListener('mousedown', function (e) {
+      isDragging = true;
+      hasMoved = false;
+      startX = e.clientX - offsetX;
+      startY = e.clientY - offsetY;
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (isDragging) {
+        e.preventDefault();
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+
+        // Mark as moved if dragged more than 5px
+        if (Math.abs(offsetX) > 5 || Math.abs(offsetY) > 5) {
+          hasMoved = true;
+        }
+
+        widget.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      }
+    });
+
+    document.addEventListener('mouseup', function () {
+      isDragging = false;
+    });
+
+    // Prevent navigation if dragged
+    link.addEventListener('click', function (e) {
+      if (hasMoved) {
+        e.preventDefault();
+        hasMoved = false;
+      }
+    });
+  })();
+</script>
+
+{% endblock content %}

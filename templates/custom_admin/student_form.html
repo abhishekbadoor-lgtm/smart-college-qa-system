@@ -1,0 +1,76 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'admin_student_list' %}">Students</a></li>
+        <li class="breadcrumb-item active">Edit Student</li>
+    </ol>
+</nav>
+
+<div class="card col-md-8 mx-auto shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0"><i class="fas fa-user-edit me-2 text-primary"></i>Edit Student Profile: {{
+            student.user.username }}</h5>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ student.user.first_name }}"
+                        required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ student.user.last_name }}"
+                        required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" value="{{ student.user.email }}" required>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Roll Number</label>
+                    <input type="text" name="roll_number" class="form-control" value="{{ student.roll_number }}"
+                        required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Course</label>
+                    <select name="course" class="form-select" required>
+                        <option value="">-- Select Course --</option>
+                        {% for c in courses %}
+                        <option value="{{ c.id }}" {% if c.id == student.course.id %}selected{% endif %}>
+                            {{ c.code }} - {{ c.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4 col-md-6">
+                <label class="form-label">Current Semester</label>
+                <input type="number" name="current_semester" class="form-control" value="{{ student.current_semester }}"
+                    min="1">
+                <div class="form-text">Update this when a student moves to the next semester.</div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'admin_student_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'student_dashboard/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card shadow-sm border-0 position-relative">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Attendance</h6>
+                        <h2 class="mb-0">{{ attendance_percentage }}%</h2>
+                        <small class="text-muted">{{ present_count }}/{{ total_classes }} classes</small>
+                    </div>
+                    <div class="text-primary" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+                <a href="{% url 'student_attendance' %}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Internal Marks</h6>
+                        <h2 class="mb-0">{{ recent_marks.count }}</h2>
+                        <small class="text-muted">Verified marks</small>
+                    </div>
+                    <div class="text-success" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card stat-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Course</h6>
+                        <h2 class="mb-0">{{ student.course.code|default:"-" }}</h2>
+                        <small class="text-muted">{{ student.course.name|default:"Not Assigned" }} (Sem {{student.current_semester }})</small>
+                    </div>
+                    <div class="text-warning" style="font-size: 3rem; opacity: 0.2;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Marks -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Recent Internal Marks</h5>
+            <a href="{% url 'student_marks' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if recent_marks %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Type</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in recent_marks %}
+                    <tr>
+                        <td>{{ mark.subject.code }}</td>
+                        <td>{{ mark.get_mark_type_display }}</td>   
+                        <td><strong class="text-primary">{{ mark.score }}</strong></td>
+                        <td>{{ mark.date_entered|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No marks available yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent Notices -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Recent Notices</h5>
+            <a href="{% url 'student_notices' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if recent_notices %}
+        <div class="list-group list-group-flush">
+            {% for notice in recent_notices %}
+            <div class="list-group-item px-0">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">{{ notice.title }}</h6>
+                    <small class="text-muted">{{ notice.date_posted|date:"M d, H:i" }}</small>
+                </div>
+                <p class="mb-1 text-muted">{{ notice.content|truncatewords:20 }}</p>
+                <small class="text-muted d-block mt-1">
+                    Posted by:
+                    {% if notice.faculty_posted %}
+                    {{ notice.faculty_posted.user.get_full_name|default:notice.faculty_posted.user.username }}
+                    {% else %}
+                    Admin
+                    {% endif %}
+                </small>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-3">No notices available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'student_dashboard/base.html' %}
+
+{% block title %}Ask a Question - Q&A{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="mb-3">
+    <a href="{% url 'qa_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Questions
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-question-circle me-2"></i>Ask a Question</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Tips for asking a good question:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Be specific and clear in your title</li>
+                        <li>Provide enough context in the description</li>
+                        <li>Select the appropriate department/category</li>
+                        <li>Check if your question has already been asked</li>
+                    </ul>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">
+                            Question Title <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="title" name="title"
+                            placeholder="e.g., How do I submit my assignment?" required maxlength="255">
+                        <small class="form-text text-muted">
+                            Keep it short and descriptive (max 255 characters)
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="6"
+                            placeholder="Provide detailed information about your question..." required></textarea>
+                        <small class="form-text text-muted">
+                            Include all relevant details to help others understand your question
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="department" class="form-label">
+                            Department/Category <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="department" name="department" required>
+                            {% for code, name in department_choices %}
+                            <option value="{{ code }}" {% if code == 'GEN' %}selected{% endif %}>
+                                {{ name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">
+                            Select the most relevant category for your question
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'qa_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Post Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
